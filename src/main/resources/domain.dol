@@ -1,0 +1,65 @@
+/*******************************************************************************
+ * Copyright 2012-2013 Trento RISE
+ * 
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ ******************************************************************************/
+package eu.trentorise.smartcampus.domain.artiststn;
+
+import it.sayservice.platform.compiler.domain.model.annotations.ServiceNotification;
+import it.sayservice.platform.compiler.domain.model.annotations.Subscription;
+
+import eu.trentorise.smartcampus.domain.discovertrento.EventService;
+import eu.trentorise.smartcampus.domain.discovertrento.POIService;
+import eu.trentorise.smartcampus.domain.discovertrento.GenericEvent;
+import eu.trentorise.smartcampus.domain.discovertrento.GenericPOI;
+
+DomainObject ArtistsTnPOIService implements POIService {
+    
+	port update(data : GenericPOI[]);
+
+	action updatePOI(data : GenericPOI[]) {
+		publish update(data);
+	}
+
+    subscribe ArtistsTnSubscriber!updatePOI() => updatePOI(data);
+    
+}
+
+DomainObject ArtistsTnEventService implements EventService {
+    
+	port update(data : GenericEvent[]);
+
+	action updateEvents(data : GenericEvent[]) {
+		publish update(data);
+	}
+
+    subscribe ArtistsTnSubscriber!updateEvents() => updateEvents(data);
+    
+}
+
+DomainObject ArtistsTnSubscriber  {
+
+    @ServiceNotification(serviceId="smartcampus.service.artiststn", methodName="GetArtists", converter="eu.trentorise.smartcampus.domain.artiststn.converter.ArtistsTnPOIConverter")
+    port updatePOI(data : GenericPOI[]);
+    
+    @ServiceNotification(serviceId="smartcampus.service.artiststn", methodName="GetArtists", converter="eu.trentorise.smartcampus.domain.artiststn.converter.ArtistsTnEventsConverter")
+    port updateEvents(data : GenericEvent[]);    
+
+    @Subscription(serviceId="smartcampus.service.artiststn", methodName="GetArtists")
+    operation subscribeArtists();       
+    
+    action initialize() {
+        invoke subscribeArtists();
+    }
+
+}
