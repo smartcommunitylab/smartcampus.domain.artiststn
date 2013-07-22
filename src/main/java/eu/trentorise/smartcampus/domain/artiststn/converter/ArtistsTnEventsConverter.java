@@ -27,7 +27,7 @@ public class ArtistsTnEventsConverter implements DataConverter {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
 	private static final String SOURCE_MUSE = "Muse";
-	private static final String EXHIBITIONS = "Exhibitions";
+	private static final String TYPE_MUSE = "Muse";
 
 	// private static final int DURATION = (24*60 - 1)*60*1000;
 
@@ -59,9 +59,9 @@ public class ArtistsTnEventsConverter implements DataConverter {
 
 		GenericEvent ge = new GenericEvent();
 		ge.setTitle(art.getName());
-		ge.setDescription(createDescription(art));
+		ge.setDescription(art.getDescription());
 		ge.setSource(SOURCE_MUSE);
-		ge.setType(EXHIBITIONS);
+		ge.setType(TYPE_MUSE);
 
 		String f = art.getTimesList().get(0);
 		String t = art.getTimesList().get(art.getTimesList().size() - 1);
@@ -80,6 +80,7 @@ public class ArtistsTnEventsConverter implements DataConverter {
 		
 		Map<String,Object> map = new TreeMap<String, Object>();
 		map.put("image", art.getImg());
+		map.put("link", art.getLink());
 		try {
 			ge.setCustomData(new ObjectMapper().writeValueAsString(map));
 		} catch (Exception e) {

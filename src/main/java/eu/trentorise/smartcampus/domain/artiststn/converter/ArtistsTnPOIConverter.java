@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.protobuf.ByteString;
 
@@ -59,9 +62,19 @@ public class ArtistsTnPOIConverter  implements DataConverter {
 		gp.setSource("Muse");
 		
 		gp.setTitle(art.getName());
-		gp.setDescription(createDescription(art));
+		
+		String descr = art.getDescription();
+		gp.setDescription(descr);
 		
 		gp.setId(art.getPoi().getPoiId());
+		
+		Map<String,Object> map = new TreeMap<String, Object>();
+		map.put("link", art.getLink());
+		try {
+			gp.setCustomData(new ObjectMapper().writeValueAsString(map));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}				
 		
 		return gp;
 	}
