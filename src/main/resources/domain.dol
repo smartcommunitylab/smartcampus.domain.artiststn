@@ -20,7 +20,6 @@ import it.sayservice.platform.compiler.domain.model.annotations.Subscription;
 
 import eu.trentorise.smartcampus.domain.discovertrento.EventService;
 import eu.trentorise.smartcampus.domain.discovertrento.POIService;
-import eu.trentorise.smartcampus.domain.discovertrento.GenericEvent;
 import eu.trentorise.smartcampus.domain.discovertrento.GenericPOI;
 
 DomainObject ArtistsTnPOIService implements POIService {
@@ -35,26 +34,11 @@ DomainObject ArtistsTnPOIService implements POIService {
     
 }
 
-DomainObject ArtistsTnEventService implements EventService {
-    
-	port update(data : GenericEvent[]);
-
-	action updateEvents(data : GenericEvent[]) {
-		publish update(data);
-	}
-
-    subscribe ArtistsTnSubscriber!updateEvents() => updateEvents(data);
-    
-}
-
 DomainObject ArtistsTnSubscriber  {
 
     @ServiceNotification(serviceId="smartcampus.service.artiststn", methodName="GetArtists", converter="eu.trentorise.smartcampus.domain.artiststn.converter.ArtistsTnPOIConverter")
     port updatePOI(data : GenericPOI[]);
     
-    @ServiceNotification(serviceId="smartcampus.service.artiststn", methodName="GetArtists", converter="eu.trentorise.smartcampus.domain.artiststn.converter.ArtistsTnEventsConverter")
-    port updateEvents(data : GenericEvent[]);    
-
     @Subscription(serviceId="smartcampus.service.artiststn", methodName="GetArtists")
     operation subscribeArtists();       
     

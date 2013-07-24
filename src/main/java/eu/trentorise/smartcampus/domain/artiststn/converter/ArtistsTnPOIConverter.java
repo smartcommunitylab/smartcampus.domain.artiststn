@@ -63,13 +63,14 @@ public class ArtistsTnPOIConverter  implements DataConverter {
 		
 		gp.setTitle(art.getName());
 		
-		String descr = art.getDescription();
+		String descr = art.getDescription().replace("Description ", "");
 		gp.setDescription(descr);
 		
 		gp.setId(art.getPoi().getPoiId());
 		
 		Map<String,Object> map = new TreeMap<String, Object>();
 		map.put("link", art.getLink());
+		map.put("image", art.getImg());
 		try {
 			gp.setCustomData(new ObjectMapper().writeValueAsString(map));
 		} catch (Exception e) {
